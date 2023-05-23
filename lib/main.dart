@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './questao.dart';
+import './resposta.dart';
 
 void main() {
   runApp(PerguntaApp());
@@ -18,7 +19,6 @@ class _PerguntaAppState extends State<PerguntaApp> {
     setState(() {
       _perguntaSelecionada++;
     });
-    print(_perguntaSelecionada);
   }
 
   //Função que retorna outra função:
@@ -30,49 +30,40 @@ class _PerguntaAppState extends State<PerguntaApp> {
 
   @override
   Widget build(BuildContext context) {
+    //final List<Map<String, Object>> perguntas = [], como trabalhamos com inferência não precisa especificar
     final perguntas = [
-      'Qual é a sua cor favorita?',
-      'Qual é o seu animal favorito?',
+      {
+        'texto': 'Qual é a sua cor favorita?',
+        'respostas': ['Preto', 'Vermelho', 'Verde', 'Branco'],
+      },
+      {
+        'texto': 'Qual é o seu animal favorito?',
+        'respostas': ['Coelho', 'Cobra', 'Elefante', 'Leão'],
+      },
+      {
+        'texto': 'Qual é o seu instrutor favorito?',
+        'respostas': ['Maria', 'João', 'Leo', 'Pedro'],
+      },
     ];
+
+    List<Widget> respostas = [];
+    for (String textoResp
+        in perguntas[_perguntaSelecionada].cast()['respostas']) {
+      respostas.add(Resposta(textoResp, _responder));
+    }
+
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Perguntas"),
-          centerTitle: true,
-        ),
-        body: Column(
-          children: [
-            Questao(
-              perguntas[_perguntaSelecionada],
-              texto: perguntas[_perguntaSelecionada],
-            ),
-            ElevatedButton(
-              onPressed: _responder,
-              child: const Text('Resposta 1'),
-            ),
-
-            //No onPressed também posso passar:
-            //onPressed: () {
-            //print('Resposta 2 foi selecionada!');
-            //}
-            //ou
-            //Usar a função arrow:
-            //onPressed: () => print('Resposta 1'),
-
-            //OBS: não invoque a função a não ser que a função retorne uma função.
-
-            ElevatedButton(
-              onPressed: _responder,
-              child: const Text('Resposta 2'),
-            ),
-            ElevatedButton(
-              onPressed: _responder,
-              child: const Text('Resposta 3'),
-            ),
-          ],
-        ),
-      ),
-    );
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text("Perguntas"),
+            centerTitle: true,
+          ),
+          body: Column(children: [
+            Questao(perguntas[_perguntaSelecionada]['texto'].toString(),
+                ['resposta'].toString()),
+            ...respostas
+          ]),
+        ));
   }
 }
